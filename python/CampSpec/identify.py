@@ -28,8 +28,23 @@ with open('filenames.pickle') as f:  # Python 3: open(..., 'rb')
 
 # Delete some directories/files from previous runs:
 os.system("rm -rf login.cl database pyraf uparm")
-os.system("rm "+ calibrated_filename)
 
+# Delete previous results.
+
+os.system("rm "+extracted_filename+" "+calibrated_filename)
+
+# Run the spectral extraction program.
+
+iraf.apextract.setParam("dispaxis", "1")
+
+iraf.apall(input=filename, find="No", recenter="No", resize="No",interactive="Yes")
+
+
+
+
+# Make sure that the dispersion axis is in the header.
+
+iraf.hedit(images=[filename], fields=["DISPAXIS"], value=["1"], add="Yes")
 iraf.identify(filename[:-5], coordli=home+"/Downloads/HgNe(1).dat",
               section="line 105 125",
               crval=crval,
